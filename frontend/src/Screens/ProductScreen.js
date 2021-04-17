@@ -10,10 +10,10 @@ import {
   Button,
   Form,
 } from "react-bootstrap";
-import Rating from "../Components/Rating";
+import Rating from "../components/Rating";
 import { listProductDetails } from "../actions/productActions.js";
-import Loading from "../Components/Loading";
-import ErrorMessage from "../Components/ErrorMessage";
+import Loading from "../components/Loading";
+import ErrorMessage from "../components/ErrorMessage";
 
 const ProductScreen = ({ history, match }) => {
   const [qty, setQty] = useState(1);

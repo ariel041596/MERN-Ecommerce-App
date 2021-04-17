@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Col, Row } from "react-bootstrap";
-import Product from "../Components/Product";
-import Loading from "../Components/Loading";
-import ErrorMessage from "../Components/ErrorMessage";
+import Product from "../components/Product";
+import Loading from "../components/Loading";
+import ErrorMessage from "../components/ErrorMessage";
 import { listProducts } from "../actions/productActions.js";
 
 const HomeScreen = () => {

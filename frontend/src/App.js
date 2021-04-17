@@ -6,13 +6,14 @@ import { BrowserRouter as Router, Route } from "react-router-dom";
 import { Container } from "react-bootstrap";
 
 // Components
-import Header from "./Components/Header";
-import Footer from "./Components/Footer";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
 
 // Screens
-import HomeScreen from "./Screens/HomeScreen";
-import ProductScreen from "./Screens/ProductScreen";
-import CartScreen from "./Screens/CartScreen";
+import HomeScreen from "./screens/HomeScreen";
+import ProductScreen from "./screens/ProductScreen";
+import CartScreen from "./screens/CartScreen";
+import LoginScreen from "./screens/LoginScreen";
 
 const App = () => {
   return (
@@ -20,9 +21,10 @@ const App = () => {
       <Header></Header>
       <main className="py-3">
         <Container>
-          <Route path="/" component={HomeScreen} exact></Route>
-          <Route path="/products/:id" component={ProductScreen}></Route>
+          <Route path="/login" component={LoginScreen}></Route>
           <Route path="/cart/:id?" component={CartScreen}></Route>
+          <Route path="/products/:id" component={ProductScreen}></Route>
+          <Route path="/" component={HomeScreen} exact></Route>
         </Container>
       </main>
       <Footer></Footer>
