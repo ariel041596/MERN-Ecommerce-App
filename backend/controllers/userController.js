@@ -114,6 +114,10 @@ const getUsers = asyncHandler(async (req, res) => {
 const deleteUser = asyncHandler(async (req, res) => {
   const user = await User.findById(req.params.id);
   if (user) {
+    // you can also call if the certain user who create the user can
+    // delete the user
+    // by checking
+    // if(req.user._id == user.user._id)
     await user.remove();
     res.json({
       message: "Successfully deleted user",

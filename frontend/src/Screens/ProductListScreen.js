@@ -1,46 +1,59 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { Col, Row, Button, Table, Image } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
-import { Button, Table } from "react-bootstrap";
 import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage";
 import DeleteModal from "../components/DeleteModal";
+import { listProducts, deleteProduct } from "../actions/productActions.js";
 
-import { getUserList, deleteUser } from "../actions/userActions";
-
-const UserListScreen = ({ history }) => {
+const ProductListScreen = ({ history, match }) => {
   const [modalShow, setModalShow] = useState(false);
 
   const dispatch = useDispatch();
 
-  const userList = useSelector((state) => state.userList);
-  const { loading, error, users } = userList;
-
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const userDelete = useSelector((state) => state.userDelete);
+  const productList = useSelector((state) => state.productList);
+  const { loading, error, products } = productList;
+
+  const productDelete = useSelector((state) => state.productDelete);
   const {
     error: errorDelete,
     loading: loadingDelete,
     success: successDelete,
-  } = userDelete;
+  } = productDelete;
 
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
-      dispatch(getUserList());
+      dispatch(listProducts());
     } else {
       history.push("/login");
     }
   }, [dispatch, history, userInfo, successDelete]);
-  const deleteUserHandler = (id) => {
-    dispatch(deleteUser(id));
+
+  const deleteProductHandler = (id) => {
+    dispatch(deleteProduct(id));
     setModalShow(false);
+  };
+  const createProductHandler = () => {
+    // dispatch(createProduct({}));
+    console.log("create");
   };
 
   return (
     <>
-      <h1>Users</h1>
+      <Row className="align-items-center">
+        <Col>
+          <h1>Products</h1>
+        </Col>
+        <Col className="text-right">
+          <Button className="my-3" onClick={createProductHandler}>
+            <i className="fas fa-plus"></i> Create Product
+          </Button>
+        </Col>
+      </Row>
       {loadingDelete && <Loading></Loading>}
       {errorDelete && (
         <ErrorMessage variant="danger">{errorDelete}</ErrorMessage>
@@ -50,33 +63,38 @@ const UserListScreen = ({ history }) => {
       ) : error ? (
         <ErrorMessage variant="danger">{error}</ErrorMessage>
       ) : (
-        <Table striped bordered hover responsive className="table-sm">
+        <Table striped bordered hover responsive="md" className="table-sm">
           <thead>
             <tr>
-              <th>ID</th>
               <th>NAME</th>
-              <th>EMAIL</th>
-              <th>ADMIN</th>
+              <th>IMAGE</th>
+              <th>BRAND</th>
+              <th>CATEGORY</th>
+              <th>PRICE</th>
+              <th>COUNT IN STOCK</th>
               <th>ACTIONS</th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
-              <tr key={user._id}>
-                <td>{user._id}</td>
-                <td>{user.name}</td>
+            {products.map((product) => (
+              <tr key={product._id}>
+                <td>{product.name}</td>
                 <td>
-                  <a href={`mailto:${user.email}`}>{user.email}</a>
+                  <Col md={3}>
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      fluid
+                      rounded
+                    ></Image>
+                  </Col>
                 </td>
+                <td>{product.brand}</td>
+                <td>{product.category}</td>
+                <td>₱{product.price}</td>
+                <td>{product.countInStock}</td>
                 <td>
-                  {user.isAdmin ? (
-                    <i className="fas fa-check" style={{ color: "green" }}></i>
-                  ) : (
-                    <i className="fas fa-times" style={{ color: "red" }}></i>
-                  )}
-                </td>
-                <td>
-                  <LinkContainer to={`/admin/users/${user._id}/edit`}>
+                  <LinkContainer to={`/admin/products/${product._id}/edit`}>
                     <Button className="btn-sm" variant="primary">
                       <i className="fas fa-edit"></i>
                     </Button>
@@ -91,7 +109,7 @@ const UserListScreen = ({ history }) => {
                   <DeleteModal
                     show={modalShow}
                     onHide={() => setModalShow(false)}
-                    onClose={() => deleteUserHandler(user._id)}
+                    onClose={() => deleteProductHandler(product._id)}
                   />
                 </td>
               </tr>
@@ -103,4 +121,4 @@ const UserListScreen = ({ history }) => {
   );
 };
 
-export default UserListScreen;
+export default ProductListScreen;

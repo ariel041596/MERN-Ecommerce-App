@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-import { Link } from "react-router-dom";
 import { Row, Col, Button, Form, Table } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import Loading from "../components/Loading";
@@ -33,12 +32,7 @@ const ProfileScreen = ({ location, history }) => {
   const { success } = userUpdateProfile;
 
   const myOrderList = useSelector((state) => state.myOrderList);
-  const {
-    myOrders,
-    loading: orderLoading,
-    success: orderSuccess,
-    error: orderError,
-  } = myOrderList;
+  const { myOrders, loading: orderLoading, error: orderError } = myOrderList;
 
   useEffect(() => {
     if (!userInfo) {
@@ -131,7 +125,9 @@ const ProfileScreen = ({ location, history }) => {
           <Loading></Loading>
         ) : orderError ? (
           <ErrorMessage variant="danger">{orderError}</ErrorMessage>
-        ) : myOrders.length === 0 ? (<h1>No Orders</h1>) : (
+        ) : myOrders.length === 0 ? (
+          <h1>No Orders</h1>
+        ) : (
           <Table striped bordered hover responsive className="table-sm">
             <thead>
               <tr>

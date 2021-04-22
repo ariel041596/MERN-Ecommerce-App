@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { Button, Row, Col, ListGroup, Image, Card } from "react-bootstrap";
-import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage";
-
+import Loading from "../components/Loading";
 import CheckoutSteps from "../components/CheckoutSteps";
 
 import { createOrder } from "../actions/orderAction";
@@ -145,14 +144,18 @@ const PlaceOrderScreen = ({ history }) => {
                 {error && <ErrorMessage variant="danger">{error}</ErrorMessage>}
               </ListGroup.Item>
               <ListGroup.Item>
-                <Button
-                  type="button"
-                  className="btn-block"
-                  disabled={cart.cartItems === 0}
-                  onClick={submitHandler}
-                >
-                  Place Order
-                </Button>
+                {loading ? (
+                  <Loading></Loading>
+                ) : (
+                  <Button
+                    type="button"
+                    className="btn-block"
+                    disabled={cart.cartItems === 0}
+                    onClick={submitHandler}
+                  >
+                    Place Order
+                  </Button>
+                )}
               </ListGroup.Item>
             </ListGroup>
           </Card>
