@@ -150,7 +150,7 @@ const ProductListScreen = ({ history, match }) => {
                   <DeleteModal
                     show={show}
                     onHide={() => setShow(false)}
-                    onConfirm={() => deleteProductHandler()}
+                    onConfirm={deleteProductHandler}
                   />
                 </td>
               </tr>

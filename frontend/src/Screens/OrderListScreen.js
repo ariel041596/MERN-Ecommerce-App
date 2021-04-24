@@ -7,11 +7,10 @@ import ErrorMessage from "../components/ErrorMessage";
 import DeleteModal from "../components/DeleteModal";
 
 import { listOrders } from "../actions/orderAction";
-import ProductListScreen from "./ProductListScreen";
 
 const OrderListScreen = ({ history }) => {
   const [show, setShow] = useState(false);
-  const [userID, setUserID] = useState("");
+  // const [userID, setUserID] = useState("");
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
