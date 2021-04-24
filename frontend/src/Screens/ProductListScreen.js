@@ -9,7 +9,6 @@ import {
   listProducts,
   deleteProduct,
   createProduct,
-  updateProduct,
 } from "../actions/productActions.js";
 import { PRODUCT_CREATE_RESET } from "../constants/productConstants";
 

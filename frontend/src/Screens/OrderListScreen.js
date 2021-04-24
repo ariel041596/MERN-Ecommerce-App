@@ -54,13 +54,15 @@ const OrderListScreen = ({ history }) => {
         <Table striped bordered hover responsive className="table-sm">
           <thead>
             <tr>
-              <th>ID</th>
+              <th>ORDER ID</th>
+              <th>USER</th>
               <th>TOTAL PRICE</th>
               <th>TAX PRICE</th>
               <th>SHIPPING PRICE</th>
               <th>SHIPPING ADDRESS</th>
               <th>IS PAID</th>
               <th>IS DELIVERED</th>
+              <th>DATE</th>
               <th>ACTIONS</th>
             </tr>
           </thead>
@@ -68,9 +70,10 @@ const OrderListScreen = ({ history }) => {
             {orders.map((order) => (
               <tr key={order._id}>
                 <td>{order._id}</td>
-                <td>{order.totalPrice}</td>
-                <td>{order.taxPrice}</td>
-                <td>{order.shippingPrice}</td>
+                <td>{order.user && order.user.name}</td>
+                <td>₱{order.totalPrice}</td>
+                <td>₱{order.taxPrice}</td>
+                <td>₱{order.shippingPrice}</td>
                 <td>
                   {order.shippingAddress.address}
                   {order.shippingAddress.city}
@@ -79,22 +82,23 @@ const OrderListScreen = ({ history }) => {
                 </td>
                 <td>
                   {order.isPaid ? (
-                    <i className="fas fa-check" style={{ color: "green" }}></i>
+                    order.paidAt.substring(0, 10)
                   ) : (
                     <i className="fas fa-times" style={{ color: "red" }}></i>
                   )}
                 </td>
                 <td>
                   {order.isDelivered ? (
-                    <i className="fas fa-check" style={{ color: "green" }}></i>
+                    order.deliveredAt.substring(0, 10)
                   ) : (
                     <i className="fas fa-times" style={{ color: "red" }}></i>
                   )}
                 </td>
+                <td>{order.createdAt.substring(0, 10)}</td>
                 <td>
-                  <LinkContainer to={`/admin/orders/${order._id}/edit`}>
+                  <LinkContainer to={`/orders/${order._id}`}>
                     <Button className="btn-sm" variant="primary">
-                      <i className="fas fa-edit"></i>
+                      Details
                     </Button>
                   </LinkContainer>
                   <Button
