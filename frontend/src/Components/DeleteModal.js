@@ -22,7 +22,7 @@ const DeleteModal = (props) => {
         <Button variant="secondary" onClick={props.onHide}>
           Close
         </Button>
-        <Button variant="danger" onClick={props.onClose}>
+        <Button variant="danger" onClick={props.onConfirm}>
           Delete
         </Button>
       </Modal.Footer>

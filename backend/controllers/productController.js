@@ -98,7 +98,7 @@ const updateProduct = asyncHandler(async (req, res) => {
     res.json(updatedProduct);
   } else {
     res.status(404);
-    throw new Error("Order not found");
+    throw new Error("Product not found");
   }
 });
 

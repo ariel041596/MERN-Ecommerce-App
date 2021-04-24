@@ -6,9 +6,10 @@ import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage";
 import DeleteModal from "../components/DeleteModal";
 
-import { getUserList, deleteUser } from "../actions/userActions";
+import { listOrders } from "../actions/orderAction";
+import ProductListScreen from "./ProductListScreen";
 
-const UserListScreen = ({ history }) => {
+const OrderListScreen = ({ history }) => {
   const [show, setShow] = useState(false);
   const [userID, setUserID] = useState("");
 
@@ -17,73 +18,87 @@ const UserListScreen = ({ history }) => {
 
   const dispatch = useDispatch();
 
-  const userList = useSelector((state) => state.userList);
-  const { loading, error, users } = userList;
+  const orderList = useSelector((state) => state.orderList);
+  const { loading, error, orders } = orderList;
 
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
 
-  const userDelete = useSelector((state) => state.userDelete);
-  const { success: successDelete } = userDelete;
-
   useEffect(() => {
     if (userInfo && userInfo.isAdmin) {
-      dispatch(getUserList());
+      dispatch(listOrders());
     } else {
       history.push("/login");
     }
-  }, [dispatch, history, successDelete, userInfo]);
+  }, [dispatch, history, userInfo]);
 
-  const deleteUserHandler = () => {
-    dispatch(deleteUser(userID));
+  const deleteOrderHandler = () => {
+    // dispatch(deleteOrder(userID));
     handleClose();
   };
   const handleShowModal = (userID) => {
     handleShow();
-    setUserID(userID);
+    // setUserID(userID);
   };
 
   return (
     <>
-      <h1>Users</h1>
+      <h1>Orders</h1>
       {loading ? (
         <Loading></Loading>
       ) : error ? (
         <ErrorMessage variant="danger">{error}</ErrorMessage>
+      ) : orders.length === 0 ? (
+        <h1>No Orders</h1>
       ) : (
         <Table striped bordered hover responsive className="table-sm">
           <thead>
             <tr>
               <th>ID</th>
-              <th>NAME</th>
-              <th>EMAIL</th>
-              <th>ADMIN</th>
+              <th>TOTAL PRICE</th>
+              <th>TAX PRICE</th>
+              <th>SHIPPING PRICE</th>
+              <th>SHIPPING ADDRESS</th>
+              <th>IS PAID</th>
+              <th>IS DELIVERED</th>
               <th>ACTIONS</th>
             </tr>
           </thead>
           <tbody>
-            {users.map((user) => (
-              <tr key={user._id}>
-                <td>{user._id}</td>
-                <td>{user.name}</td>
+            {orders.map((order) => (
+              <tr key={order._id}>
+                <td>{order._id}</td>
+                <td>{order.totalPrice}</td>
+                <td>{order.taxPrice}</td>
+                <td>{order.shippingPrice}</td>
                 <td>
-                  <a href={`mailto:${user.email}`}>{user.email}</a>
+                  {order.shippingAddress.address}
+                  {order.shippingAddress.city}
+                  {order.shippingAddress.postalCode}
+                  {order.shippingAddress.country}
                 </td>
                 <td>
-                  {user.isAdmin ? (
+                  {order.isPaid ? (
                     <i className="fas fa-check" style={{ color: "green" }}></i>
                   ) : (
                     <i className="fas fa-times" style={{ color: "red" }}></i>
                   )}
                 </td>
                 <td>
-                  <LinkContainer to={`/admin/users/${user._id}/edit`}>
+                  {order.isDelivered ? (
+                    <i className="fas fa-check" style={{ color: "green" }}></i>
+                  ) : (
+                    <i className="fas fa-times" style={{ color: "red" }}></i>
+                  )}
+                </td>
+                <td>
+                  <LinkContainer to={`/admin/orders/${order._id}/edit`}>
                     <Button className="btn-sm" variant="primary">
                       <i className="fas fa-edit"></i>
                     </Button>
                   </LinkContainer>
                   <Button
-                    onClick={() => handleShowModal(user._id)}
+                    onClick={() => handleShowModal(order._id)}
                     className="btn-sm"
                     variant="danger"
                   >
@@ -93,7 +108,7 @@ const UserListScreen = ({ history }) => {
                   <DeleteModal
                     show={show}
                     onHide={() => setShow(false)}
-                    onConfirm={() => deleteUserHandler()}
+                    onConfirm={() => deleteOrderHandler()}
                   />
                 </td>
               </tr>
@@ -105,4 +120,4 @@ const UserListScreen = ({ history }) => {
   );
 };
 
-export default UserListScreen;
+export default OrderListScreen;

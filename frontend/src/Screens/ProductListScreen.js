@@ -5,10 +5,20 @@ import { LinkContainer } from "react-router-bootstrap";
 import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage";
 import DeleteModal from "../components/DeleteModal";
-import { listProducts, deleteProduct } from "../actions/productActions.js";
+import {
+  listProducts,
+  deleteProduct,
+  createProduct,
+  updateProduct,
+} from "../actions/productActions.js";
+import { PRODUCT_CREATE_RESET } from "../constants/productConstants";
 
 const ProductListScreen = ({ history, match }) => {
-  const [modalShow, setModalShow] = useState(false);
+  const [show, setShow] = useState(false);
+  const [productID, setProductID] = useState("");
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   const dispatch = useDispatch();
 
@@ -18,6 +28,14 @@ const ProductListScreen = ({ history, match }) => {
   const productList = useSelector((state) => state.productList);
   const { loading, error, products } = productList;
 
+  const productCreate = useSelector((state) => state.productCreate);
+  const {
+    loading: loadingCreate,
+    error: errorCreate,
+    success: successCreate,
+    product: createdProduct,
+  } = productCreate;
+
   const productDelete = useSelector((state) => state.productDelete);
   const {
     error: errorDelete,
@@ -26,20 +44,37 @@ const ProductListScreen = ({ history, match }) => {
   } = productDelete;
 
   useEffect(() => {
-    if (userInfo && userInfo.isAdmin) {
-      dispatch(listProducts());
-    } else {
+    dispatch({
+      type: PRODUCT_CREATE_RESET,
+    });
+    if (!userInfo && !userInfo.isAdmin) {
       history.push("/login");
     }
-  }, [dispatch, history, userInfo, successDelete]);
+    if (successCreate) {
+      history.push(`/admin/products/${createdProduct._id}/edit`);
+    } else {
+      dispatch(listProducts());
+    }
+  }, [
+    dispatch,
+    history,
+    userInfo,
+    successDelete,
+    successCreate,
+    createdProduct,
+  ]);
 
-  const deleteProductHandler = (id) => {
-    dispatch(deleteProduct(id));
-    setModalShow(false);
+  const deleteProductHandler = () => {
+    dispatch(deleteProduct(productID));
+    handleClose();
+  };
+
+  const handleShowModal = (productID) => {
+    handleShow();
+    setProductID(productID);
   };
   const createProductHandler = () => {
-    // dispatch(createProduct({}));
-    console.log("create");
+    dispatch(createProduct());
   };
 
   return (
@@ -54,6 +89,10 @@ const ProductListScreen = ({ history, match }) => {
           </Button>
         </Col>
       </Row>
+      {loadingCreate && <Loading></Loading>}
+      {errorCreate && (
+        <ErrorMessage variant="danger">{errorCreate}</ErrorMessage>
+      )}
       {loadingDelete && <Loading></Loading>}
       {errorDelete && (
         <ErrorMessage variant="danger">{errorDelete}</ErrorMessage>
@@ -62,6 +101,8 @@ const ProductListScreen = ({ history, match }) => {
         <Loading></Loading>
       ) : error ? (
         <ErrorMessage variant="danger">{error}</ErrorMessage>
+      ) : products.length === 0 ? (
+        <h1>No Products Available</h1>
       ) : (
         <Table striped bordered hover responsive="md" className="table-sm">
           <thead>
@@ -100,16 +141,17 @@ const ProductListScreen = ({ history, match }) => {
                     </Button>
                   </LinkContainer>
                   <Button
-                    onClick={() => setModalShow(true)}
+                    onClick={() => handleShowModal(product._id)}
                     className="btn-sm"
                     variant="danger"
                   >
                     <i className="fas fa-trash"></i>
                   </Button>
+
                   <DeleteModal
-                    show={modalShow}
-                    onHide={() => setModalShow(false)}
-                    onClose={() => deleteProductHandler(product._id)}
+                    show={show}
+                    onHide={() => setShow(false)}
+                    onConfirm={() => deleteProductHandler()}
                   />
                 </td>
               </tr>
