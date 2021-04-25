@@ -17,6 +17,7 @@ import {
 } from "../actions/productActions.js";
 import Loading from "../components/Loading";
 import ErrorMessage from "../components/ErrorMessage";
+import Meta from "../components/Meta";
 import { PRODUCT_CREATE_REVIEW_RESET } from "../constants/productConstants";
 
 const ProductScreen = ({ history, match }) => {
@@ -73,6 +74,7 @@ const ProductScreen = ({ history, match }) => {
         <ErrorMessage variant="danger">{error}</ErrorMessage>
       ) : (
         <>
+          <Meta title={product.name}></Meta>
           <Row>
             <Col md={6}>
               <Image src={product.image} alt={product.name} fluid></Image>
@@ -201,7 +203,11 @@ const ProductScreen = ({ history, match }) => {
                     {loadingProductReview ? (
                       <Loading></Loading>
                     ) : (
-                      <Button type="submit" variant="primary">
+                      <Button
+                        disabled={!comment}
+                        type="submit"
+                        variant="primary"
+                      >
                         Submit
                       </Button>
                     )}
