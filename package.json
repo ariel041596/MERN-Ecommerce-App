@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "description": "MERN Shopping App",
   "main": "server.js",
+  "engines": {
+    "node": "14.16.1"
+  },
   "type": "module",
   "scripts": {
     "start": "node backend/server",
